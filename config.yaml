@@ -9,11 +9,12 @@ params:
     buttonText: Get Started
     subtitle: |-
          Industrial Engineer, MBA Candidate at @LBS. Passionate about technology and science, with a focus on driving operational and financial performance improvements. Strong analytical skills and a collaborative approach to problem-solving
-    title: Ignacio Gaing - McKinsey & Company - Ex MELI
+    
+    title: Ignacio Gaing 
   contact:
     address:
       - city: London
-        country: UK
+        country: UK4
         street: Sussex 
         title: Address
     buttonClear: Clear
