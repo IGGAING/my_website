@@ -113,3 +113,7 @@ params:
       and I look forward to hearing from you soon."
     title: Thank You
     url: blogs
+  markup: 
+    goldmark: 
+      renderer: 
+        unsafe: true
