@@ -8,7 +8,7 @@ params:
   banner:
     buttonText: Get Started
     subtitle: |-
-         Industrial Engineer, MBA Candidate at @LBS. Passionate about technology and science, with a focus on driving operational and financial performance improvements. Strong analytical skills and a collaborative approach to problem-solving
+         Industrialll Engineer, MBA Candidate at @LBS. Passionate about technology and science, with a focus on driving operational and financial performance improvements. Strong analytical skills and a collaborative approach to problem-solving
     
     title: Ignacio Gaing
     subTitle2: Additional information goes here.
@@ -102,11 +102,14 @@ params:
   two:
     buttonText: Get Started
     enable: yes
-    subtitle: "Nullam et orci eu lorem consequat tincidunt vivamus et sagittis libero.
-      \n    Mauris aliquet magna magna sed nunc rhoncus pharetra. \n    Pellentesque
-      condimentum sem. In efficitur ligula tate urna. Maecenas laoreet massa vel lacinia
-      pellentesque lorem ipsum dolor. \n    Nullam et orci eu lorem consequat tincidunt.
-      Vivamus et sagittis libero.\n    Mauris aliquet magna magna sed nunc rhoncus
-      amet pharetra et feugiat tempus."
-    title: Massa libero
+    subtitle: "Thank you for taking the time to visit my personal webpage. 
+    I appreciate your interest and hope you found the content informative and enjoyable.
+      \n    If you have any questions, feedback, or inquiries, 
+      please don't hesitate to reach out to me.  \n 
+      You can contact me using any of the methods listed on the webpage. 
+      Whether it's through email, phone, or social media, 
+      I'm always available and eager to assist you. \n   
+      Once again, thank you for visiting, 
+      and I look forward to hearing from you soon."
+    title: Thank You
     url: blogs
