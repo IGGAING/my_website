@@ -77,7 +77,7 @@ params:
     showcase:
       - image: pic01.jpg
         subtitle: Ipsum Dolor Sit Amet
-        title: Aliquama
+        title: Aliquam
         url: blogs/risk_return
       - image: pic02.jpg
         subtitle: Feugiat Amet Tempus
