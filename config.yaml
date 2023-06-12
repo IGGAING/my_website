@@ -113,3 +113,59 @@ params:
       and I look forward to hearing from you soon."
     title: Thank You
     url: blogs
+    
+  library(shiny)
+library(mailR)
+
+ui <- fluidPage(
+  tags$form(
+    id = "contactForm",
+    action = "",
+    method = "post",
+    textInput("nameInput", "Name"),
+    textInput("emailInput", "Email"),
+    textAreaInput("messageInput", "Message"),
+    actionButton("sendBtn", "Send Message"),
+    actionButton("clearBtn", "Clear")
+  )
+)
+
+server <- function(input, output, session) {
+  observeEvent(input$sendBtn, {
+    # Get the input values
+    name <- input$nameInput
+    email <- input$emailInput
+    message <- input$messageInput
+    
+    # Set up email settings
+    sender <- "your-email@example.com"
+    recipient <- "ignacio.gaing@gmail.com"
+    subject <- "New message from portfolio website"
+    body <- paste("Name:", name, "\nEmail:", email, "\n\nMessage:", message)
+    
+    # Send the email
+    send.mail(from = sender,
+              to = recipient,
+              subject = subject,
+              body = body,
+              smtp = list(host.name = "smtp.gmail.com",
+                          port = 587,
+                          user.name = "ignacio.gaingl@gmail.com",
+                          passwd = "Igna.36275826",
+                          ssl = TRUE),
+              authenticate = TRUE,
+              send = TRUE)
+    
+    # Show a success message or perform any other necessary actions
+    showModal(modalDialog("Message sent successfully!"))
+  })
+  
+  observeEvent(input$clearBtn, {
+    # Clear the input fields
+    updateTextInput(session, "nameInput", value = "")
+    updateTextInput(session, "emailInput", value = "")
+    updateTextAreaInput(session, "messageInput", value = "")
+  })
+}
+
+shinyApp(ui, server)
