@@ -75,9 +75,9 @@ params:
   tiles:
     enable: yes
     showcase:
-      - image: pic01.jpg
-        subtitle: Ipsum Dolor Sit Amet
-        title: Aliquam
+      - image: riskreturn.png
+        subtitle: Embarking on the Investment Odyssey - Navigating Risk for Reward
+        title: Risk Return
         url: blogs/risk_return
       - image: pic02.jpg
         subtitle: Feugiat Amet Tempus
