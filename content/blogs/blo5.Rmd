@@ -1,0 +1,158 @@
+---
+categories:  
+- ""    #the front matter should be like the one found in, e.g., blog2.md. It cannot be like the normal Rmd we used
+- ""
+date: "2021-09-30"
+description: Unleashing Insights through Captivating Analysis # the title that will show up once someone gets to this page
+draft: false
+image: dataa2.jpg # save picture in \static\img\blogs. Acceptable formats= jpg, jpeg, or png . Your iPhone pics wont work
+
+keywords: ""
+slug: blo5 # slug is the shorthand URL address... no spaces plz
+title: Data Analysis
+---
+  
+
+
+
+```{r, setup, echo=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE, 
+  warning = FALSE, 
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+options(digits = 3)
+
+# default figure size
+knitr::opts_chunk$set(
+  fig.width=6.75, 
+  fig.height=6.75,
+  fig.align = "center"
+)
+```
+
+
+```{r load-libraries, warning=FALSE, message=FALSE, echo=FALSE}
+library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(lubridate)
+library(here)
+library(skimr)
+library(janitor)
+library(vroom)
+library(tidyquant)
+library(rvest)    # scrape websites
+library(purrr)  
+library(lubridate) #to handle dates
+library(ggrepel)
+library(tidyverse)
+library(nycflights13)
+library(skimr)
+library(tidyverse)
+library(wbstats)
+library(tictoc)
+library(skimr)
+library(countrycode)
+library(here)
+library(DBI)
+library(dbplyr)
+library(arrow)
+library(rvest)
+library(robotstxt) # check if we're allowed to scrape the data
+library(scales)
+library(sf)
+library(readxl)
+library(stringr)
+library(purrr)
+library(lubridate)
+library(ggplot2)
+library(forcats)
+library(shiny)
+library(cowplot)
+library(dplyr)
+library(tidyr)
+library(readr)
+library(janitor)
+```
+
+
+# Money in UK politics
+
+[The Westminster Accounts](https://news.sky.com/story/the-westminster-accounts-12786091), a recent collaboration between Sky News and Tortoise Media, examines the flow of money through UK politics. It does so by combining data from three key sources:
+
+1.  [Register of Members' Financial Interests](https://www.parliament.uk/mps-lords-and-offices/standards-and-financial-interests/parliamentary-commissioner-for-standards/registers-of-interests/register-of-members-financial-interests/),
+2.  [Electoral Commission records of donations to parties](http://search.electoralcommission.org.uk/English/Search/Donations), and
+3.  [Register of All-Party Parliamentary Groups](https://www.parliament.uk/mps-lords-and-offices/standards-and-financial-interests/parliamentary-commissioner-for-standards/registers-of-interests/register-of-all-party-party-parliamentary-groups/).
+
+You can [search and explore the results](https://news.sky.com/story/westminster-accounts-search-for-your-mp-or-enter-your-full-postcode-12771627) through the collaboration's interactive database. Simon Willison [has extracted a database](https://til.simonwillison.net/shot-scraper/scraping-flourish) and this is what we will be working with. If you want to read more about [the project's methodology](https://www.tortoisemedia.com/2023/01/08/the-westminster-accounts-methodology/).
+
+## Open a connection to the database
+
+The database made available by Simon Willison is an `SQLite` database
+
+
+```{r, tickers_from_wikipedia}
+ con <- DBI::dbConnect(
+  drv = RSQLite::SQLite(),
+  dbname = here::here("data", "sky-westminster-files.db")
+)
+```
+
+How many tables does the database have?
+
+```{r}
+DBI::dbListTables(con)
+```
+Problem 3: What plane (specified by the tailnum variable) traveled the most times from New York City airports in 2013? Please left_join() the resulting table with the table planes (also included in the nycflights13 package).
+
+```{r, risk_return, echo=FALSE}
+#| label: problem-3
+
+# Load necessary packages
+library(dplyr)
+library(nycflights13)
+
+# Filter flights for New York City airports and the year 2013 and that 
+filtered_flights <- flights %>%
+  filter(substr(year, 1, 4) == "2013" & !is.na(tailnum))
+
+# Count the number of occurrences of each tail number
+tailnum_counts <- filtered_flights %>%
+  count(tailnum)
+
+# Sort the counts in descending order
+sorted_tailnum_counts <- tailnum_counts %>%
+  arrange(desc(n))
+
+#Join with planes to get planes >50 
+
+sorted_tailnum_50_counts <- sorted_tailnum_counts %>%
+  left_join(planes, by = "tailnum", na_matches = "never") %>%
+  filter(seats > 50)
+
+
+# Retrieve the tail number with the highest count
+most_frequent_plane <- sorted_tailnum_50_counts$tailnum[1]
+
+# Display the results
+most_frequent_plane
+
+# Get the plane with the greatest number of flights and more than 50 seats
+selected_plane <- planes %>%
+  filter(seats > 50 & tailnum == most_frequent_plane)
+
+# Filter flights for the selected plane in 2013
+selected_flights <- filtered_flights %>%
+  filter(tailnum == most_frequent_plane)
+
+# Display the results
+selected_flights
+
+# Count flights by destination
+flight_counts_by_dest <- selected_flights %>%
+  count(dest) %>%
+  arrange(desc(n))
+
+# Output the result
+flight_counts_by_dest
+
+```

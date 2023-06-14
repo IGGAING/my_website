@@ -91,10 +91,10 @@ params:
         subtitle: Unveiling the Beauty of Data Through Dynamic Visualization
         title: Data Visualisation
         url: blogs/blo4
-      - image: pic05.jpg
-        subtitle: Ipsum Dolor Sit Amet
-        title: Consequat
-        url: blogs/ipsum
+      - image: dataa.jpg
+        subtitle: Unleashing Insights through Captivating Analysis
+        title: Data Analysis
+        url: blogs/blo5
       - image: pic06.jpg
         subtitle: Feugiat Amet Tempus
         title: Etiam
