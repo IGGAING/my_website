@@ -95,10 +95,10 @@ params:
         subtitle: Unleashing Insights through Captivating Analysis
         title: Data Analysis
         url: blogs/blo5
-      - image: pic06.jpg
-        subtitle: Feugiat Amet Tempus
-        title: Etiam
-        url: blogs/ipsum
+      - image: scrap1.jpg
+        subtitle: The Data Harvesters Unearthing Hidden Treasures through Elegant Web Scraping
+        title: Scraping Data
+        url: blogs/blo6
   two:
     buttonText: Get Started
     enable: yes
