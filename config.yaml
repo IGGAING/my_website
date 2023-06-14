@@ -87,10 +87,10 @@ params:
         subtitle: Example 1 - Advanced Techniques
         title: Unleashing the Power of Data Manipulation
         url: blogs/blo3
-      - image: pic04.jpg
-        subtitle: Nisl Sed Aliquam
-        title: Ipsum
-        url: blogs/ipsum
+      - image: datavis.jpg
+        subtitle: Unveiling the Beauty of Data Through Dynamic Visualization
+        title: Data Visualisation
+        url: blogs/blo4
       - image: pic05.jpg
         subtitle: Ipsum Dolor Sit Amet
         title: Consequat
