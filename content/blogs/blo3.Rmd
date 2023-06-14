@@ -44,6 +44,9 @@ library(rvest)    # scrape websites
 library(purrr)  
 library(lubridate) #to handle dates
 library(ggrepel)
+library(tidyverse)
+library(nycflights13)
+library(skimr)
 ```
 
 
@@ -64,62 +67,83 @@ flights %>%
   filter(arr_delay >= 2)
 ```
 
+Problem 2: What months had the highest and lowest proportion of cancelled flights? Interpret any seasonal patterns. To determine if a flight was cancelled use the following code
+
 ```{r}
-#visualise monthly returns since 2010, for each of the 30 DJIA stocks
-myStocks_returns_monthly %>% 
-  filter(symbol != "^VIX", symbol != "SPY") %>% 
-  filter(date >= "2010-01-01") %>% 
-  ggplot(aes(x = monthly_returns)) +
-  geom_density(aes(colour = symbol), alpha = 1) +
-  geom_histogram(aes(fill = symbol), alpha = 0.4, binwidth = 0.005)+
-  facet_wrap(~symbol, nrow=7)+
-  theme_bw(8)+
-  theme(legend.position = "none") +
-  scale_x_continuous(labels = scales::percent) +
-  labs(
-    title = "Distribution of monthly returns for DJIA stocks",
-    subtitle = "Jan 2010 - now",
-    x = "Monthly returns (%)",
-    y = "" )+
-  NULL
+#| label: problem-2
+#library(dplyr)
 
+# What months had the highest and lowest % of cancelled flights?
 
+# Calculate the percentage of cancelled flights per month
+cancelled_flights_per_month <- flights %>% 
+  group_by(month) %>%
+  summarise(total_flights = n(), 
+            cancelled_flights = sum (is.na(dep_time))) %>% 
+  mutate(percentage_cancelled = round(cancelled_flights / total_flights * 100,2))
+
+# Display the results
+cancelled_flights_per_month
+
+# Find the month with the maximum and minimum percentage of cancelled flights
+month_with_max_cancelled <- which.max(cancelled_flights_per_month$percentage_cancelled)
+month_with_min_cancelled <- which.min(cancelled_flights_per_month$percentage_cancelled)
+
+# Display the month with the maximum and minimum percentage of cancelled flights
+cat("The month with the maximum percentage of cancelled flights was:", month.name[month_with_max_cancelled], "\n")
+cat("The month with the minimum percentage of cancelled flights was:", month.name[month_with_min_cancelled], "\n")
 ```
-
+Problem 3: What plane (specified by the tailnum variable) traveled the most times from New York City airports in 2013? Please left_join() the resulting table with the table planes (also included in the nycflights13 package).
 
 ```{r, risk_return, echo=FALSE}
+#| label: problem-3
 
-by_year_monthly <- myStocks_returns_monthly %>% 
-  mutate(year = year(date),
-         month=month(date),
-         month_name = month(date, label=TRUE)
-  )
+# Load necessary packages
+library(dplyr)
+library(nycflights13)
 
-cols <- c("grey10","tomato")
+# Filter flights for New York City airports and the year 2013 and that 
+filtered_flights <- flights %>%
+  filter(substr(year, 1, 4) == "2013" & !is.na(tailnum))
 
-  
-by_year_monthly %>% 
-  group_by(year,symbol) %>% 
-  filter(year>=2017) %>% 
-  filter(symbol != "^VIX") %>% 
-  summarise(mean_return = mean(monthly_returns, na.rm=TRUE),
-            sd_return = sd(monthly_returns, na.rm=TRUE),
-            ) %>% 
-  mutate(sp500 = ifelse(symbol == "SPY", TRUE, FALSE)) %>% 
-  
-  ggplot(aes(x=sd_return, y = mean_return))+
-  geom_point(aes(color = sp500))+
-  geom_text_repel(aes(label = symbol, color = sp500), size = 3)+
-  theme_bw()+
-  scale_colour_manual(values = cols)+
-  facet_wrap(~year,nrow = 5)+
-  theme(legend.position = "none")+
-  scale_y_continuous(labels = scales::percent) +
-  labs(
-    title = "Risk-Return tradeoff for DJIA stocks",
-    subtitle = "Monthly returns, Jan 2017- now",
-    x = "Risk (SD of monthly returns)",
-    y = "Return (Mean)" )+
-  NULL
+# Count the number of occurrences of each tail number
+tailnum_counts <- filtered_flights %>%
+  count(tailnum)
+
+# Sort the counts in descending order
+sorted_tailnum_counts <- tailnum_counts %>%
+  arrange(desc(n))
+
+#Join with planes to get planes >50 
+
+sorted_tailnum_50_counts <- sorted_tailnum_counts %>%
+  left_join(planes, by = "tailnum", na_matches = "never") %>%
+  filter(seats > 50)
+
+
+# Retrieve the tail number with the highest count
+most_frequent_plane <- sorted_tailnum_50_counts$tailnum[1]
+
+# Display the results
+most_frequent_plane
+
+# Get the plane with the greatest number of flights and more than 50 seats
+selected_plane <- planes %>%
+  filter(seats > 50 & tailnum == most_frequent_plane)
+
+# Filter flights for the selected plane in 2013
+selected_flights <- filtered_flights %>%
+  filter(tailnum == most_frequent_plane)
+
+# Display the results
+selected_flights
+
+# Count flights by destination
+flight_counts_by_dest <- selected_flights %>%
+  count(dest) %>%
+  arrange(desc(n))
+
+# Output the result
+flight_counts_by_dest
 
 ```

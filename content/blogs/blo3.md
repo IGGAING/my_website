@@ -34,118 +34,123 @@ Problem 1: Use logical operators to find flights that:
 
 
 ```r
-djia_url <- "https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average"
-
-
-#get tables that exist on URL
-tables <- djia_url %>% 
-  read_html() %>% 
-  html_nodes(css="table")
-
-
-# parse HTML tables into a dataframe called djia. 
-# Use purr::map() to create a list of all tables in URL
-djia <- map(tables, . %>% 
-               html_table(fill=TRUE)%>% 
-               clean_names())
-
-
-# constituents
-table1 <- djia[[2]] %>% # the second table on the page contains the ticker symbols
-  mutate(date_added = ymd(date_added),
-         
-         # if a stock is listed on NYSE, its symbol is, e.g., NYSE: MMM
-         # We will get prices from yahoo finance which requires just the ticker
-         
-         # if symbol contains "NYSE*", the * being a wildcard
-         # then we jsut drop the first 6 characters in that string
-         ticker = ifelse(str_detect(symbol, "NYSE*"),
-                          str_sub(symbol,7,11),
-                          symbol)
-         )
-
-# we need a vector of strings with just the 30 tickers + SPY  + VIX
-tickers <- table1 %>% 
-  select(ticker) %>% 
-  pull() %>% # pull() gets them as a sting of characters
-  c("SPY", "^VIX") # and lets us add SPY, the SP500 ETF, and the VIX index
+# Had an arrival delay of two or more hours (> 120 minutes)
+flights %>% 
+  filter(arr_delay >= 2)
 ```
 
+```
+## # A tibble: 127,929 × 19
+##     year month   day dep_time sched_dep_time dep_delay arr_time sched_arr_time
+##    <int> <int> <int>    <int>          <int>     <dbl>    <int>          <int>
+##  1  2013     1     1      517            515         2      830            819
+##  2  2013     1     1      533            529         4      850            830
+##  3  2013     1     1      542            540         2      923            850
+##  4  2013     1     1      554            558        -4      740            728
+##  5  2013     1     1      555            600        -5      913            854
+##  6  2013     1     1      558            600        -2      753            745
+##  7  2013     1     1      558            600        -2      924            917
+##  8  2013     1     1      559            600        -1      941            910
+##  9  2013     1     1      600            600         0      837            825
+## 10  2013     1     1      602            605        -3      821            805
+## # ℹ 127,919 more rows
+## # ℹ 11 more variables: arr_delay <dbl>, carrier <chr>, flight <int>,
+## #   tailnum <chr>, origin <chr>, dest <chr>, air_time <dbl>, distance <dbl>,
+## #   hour <dbl>, minute <dbl>, time_hour <dttm>
+```
 
-
+Problem 2: What months had the highest and lowest proportion of cancelled flights? Interpret any seasonal patterns. To determine if a flight was cancelled use the following code
 
 
 ```r
-# Notice the cache=TRUE argument in the chunk options. Because getting data is time consuming, # cache=TRUE means that once it downloads data, the chunk will not run again next time you knit your Rmd
+#library(dplyr)
 
-myStocks <- tickers %>% 
-  tq_get(get  = "stock.prices",
-         from = "2000-01-01") %>%
-  group_by(symbol) 
+# What months had the highest and lowest % of cancelled flights?
 
-glimpse(myStocks) # examine the structure of the resulting data frame
+# Calculate the percentage of cancelled flights per month
+cancelled_flights_per_month <- flights %>% 
+  group_by(month) %>%
+  summarise(total_flights = n(), 
+            cancelled_flights = sum (is.na(dep_time))) %>% 
+  mutate(percentage_cancelled = round(cancelled_flights / total_flights * 100,2))
+
+# Display the results
+cancelled_flights_per_month
 ```
 
 ```
-## Rows: 180,937
-## Columns: 8
-## Groups: symbol [32]
-## $ symbol   <chr> "MMM", "MMM", "MMM", "MMM", "MMM", "MMM", "MMM", "MMM", "MMM"…
-## $ date     <date> 2000-01-03, 2000-01-04, 2000-01-05, 2000-01-06, 2000-01-07, …
-## $ open     <dbl> 48.0, 46.4, 45.6, 47.2, 50.6, 50.2, 50.4, 51.0, 50.7, 50.4, 4…
-## $ high     <dbl> 48.2, 47.4, 48.1, 51.2, 51.9, 51.8, 51.2, 51.8, 50.9, 50.5, 4…
-## $ low      <dbl> 47.0, 45.3, 45.6, 47.2, 50.0, 50.0, 50.2, 50.4, 50.2, 49.5, 4…
-## $ close    <dbl> 47.2, 45.3, 46.6, 50.4, 51.4, 51.1, 50.2, 50.4, 50.4, 49.7, 4…
-## $ volume   <dbl> 2173400, 2713800, 3699400, 5975800, 4101200, 3863800, 2357600…
-## $ adjusted <dbl> 25.1, 24.1, 24.8, 26.8, 27.4, 27.2, 26.8, 26.8, 26.8, 26.5, 2…
+## # A tibble: 12 × 4
+##    month total_flights cancelled_flights percentage_cancelled
+##    <int>         <int>             <int>                <dbl>
+##  1     1         27004               521                 1.93
+##  2     2         24951              1261                 5.05
+##  3     3         28834               861                 2.99
+##  4     4         28330               668                 2.36
+##  5     5         28796               563                 1.96
+##  6     6         28243              1009                 3.57
+##  7     7         29425               940                 3.19
+##  8     8         29327               486                 1.66
+##  9     9         27574               452                 1.64
+## 10    10         28889               236                 0.82
+## 11    11         27268               233                 0.85
+## 12    12         28135              1025                 3.64
 ```
-
-Financial performance analysis depend on returns; If I buy a stock today for 100 and I sell it tomorrow for 101.75, my one-day return, assuming no transaction costs, is 1.75%. So given the adjusted closing prices, our first step is to calculate daily and monthly returns.
-
-
 
 ```r
-#calculate daily returns
-myStocks_returns_daily <- myStocks %>%
-  tq_transmute(select     = adjusted, 
-               mutate_fun = periodReturn, 
-               period     = "daily", 
-               type       = "log",
-               col_rename = "daily_returns",
-               cols = c(nested.col))  
+# Find the month with the maximum and minimum percentage of cancelled flights
+month_with_max_cancelled <- which.max(cancelled_flights_per_month$percentage_cancelled)
+month_with_min_cancelled <- which.min(cancelled_flights_per_month$percentage_cancelled)
 
-#calculate monthly  returns
-myStocks_returns_monthly <- myStocks %>%
-  tq_transmute(select     = adjusted, 
-               mutate_fun = periodReturn, 
-               period     = "monthly", 
-               type       = "arithmetic",
-               col_rename = "monthly_returns",
-               cols = c(nested.col)) 
+# Display the month with the maximum and minimum percentage of cancelled flights
+cat("The month with the maximum percentage of cancelled flights was:", month.name[month_with_max_cancelled], "\n")
 ```
 
+```
+## The month with the maximum percentage of cancelled flights was: February
+```
 
 ```r
-#visualise monthly returns since 2010, for each of the 30 DJIA stocks
-myStocks_returns_monthly %>% 
-  filter(symbol != "^VIX", symbol != "SPY") %>% 
-  filter(date >= "2010-01-01") %>% 
-  ggplot(aes(x = monthly_returns)) +
-  geom_density(aes(colour = symbol), alpha = 1) +
-  geom_histogram(aes(fill = symbol), alpha = 0.4, binwidth = 0.005)+
-  facet_wrap(~symbol, nrow=7)+
-  theme_bw(8)+
-  theme(legend.position = "none") +
-  scale_x_continuous(labels = scales::percent) +
-  labs(
-    title = "Distribution of monthly returns for DJIA stocks",
-    subtitle = "Jan 2010 - now",
-    x = "Monthly returns (%)",
-    y = "" )+
-  NULL
+cat("The month with the minimum percentage of cancelled flights was:", month.name[month_with_min_cancelled], "\n")
 ```
 
-<img src="/blogs/blo3_files/figure-html/unnamed-chunk-1-1.png" width="648" style="display: block; margin: auto;" />
+```
+## The month with the minimum percentage of cancelled flights was: October
+```
+Problem 3: What plane (specified by the tailnum variable) traveled the most times from New York City airports in 2013? Please left_join() the resulting table with the table planes (also included in the nycflights13 package).
 
 
-<img src="/blogs/blo3_files/figure-html/risk_return-1.png" width="648" style="display: block; margin: auto;" />
+```
+## [1] "N328AA"
+```
+
+```
+## # A tibble: 393 × 19
+##     year month   day dep_time sched_dep_time dep_delay arr_time sched_arr_time
+##    <int> <int> <int>    <int>          <int>     <dbl>    <int>          <int>
+##  1  2013     1     1     1026           1030        -4     1351           1340
+##  2  2013     1     2     1038           1030         8     1347           1340
+##  3  2013     1     3     1152           1200        -8     1446           1510
+##  4  2013     1     4      858            900        -2     1210           1220
+##  5  2013     1     5      851            900        -9     1206           1220
+##  6  2013     1     6     1027           1030        -3     1335           1340
+##  7  2013     1     7      724            730        -6     1008           1100
+##  8  2013     1     7     2134           2135        -1       19             50
+##  9  2013     1     8     2130           2135        -5      114             50
+## 10  2013     1     9     1701           1645        16     1958           2005
+## # ℹ 383 more rows
+## # ℹ 11 more variables: arr_delay <dbl>, carrier <chr>, flight <int>,
+## #   tailnum <chr>, origin <chr>, dest <chr>, air_time <dbl>, distance <dbl>,
+## #   hour <dbl>, minute <dbl>, time_hour <dttm>
+```
+
+```
+## # A tibble: 6 × 2
+##   dest      n
+##   <chr> <int>
+## 1 LAX     313
+## 2 SFO      52
+## 3 MIA      25
+## 4 BOS       1
+## 5 MCO       1
+## 6 SJU       1
+```
