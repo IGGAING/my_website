@@ -75,7 +75,7 @@ params:
   tiles:
     enable: yes
     showcase:
-      - image: riskreturn.png
+      - image: cvprinc.png
         subtitle: Illuminating My Professional Journey
         title: Curriculum Vitae
         url: blogs/tempus
