@@ -83,10 +83,10 @@ params:
         subtitle: Embarking on the Investment Odyssey - Navigating Risk for Reward
         title: Risk Return
         url: blogs/risk_return
-      - image: pic03.jpg
-        subtitle: Lorem Etiam Nullam
-        title: Magna
-        url: blogs/magna
+      - image: data.jpg
+        subtitle: Example 1 - Advanced Techniques
+        title: Unleashing the Power of Data Manipulation
+        url: blogs/blo3
       - image: pic04.jpg
         subtitle: Nisl Sed Aliquam
         title: Ipsum
