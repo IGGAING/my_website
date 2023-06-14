@@ -11,5 +11,5 @@ draft: false
 image: cv.png
 keywords: ""
 slug: tempus
-title: Tempus
+title: Curriculum Vitae - Ignacio Gaing
 ---

@@ -76,13 +76,13 @@ params:
     enable: yes
     showcase:
       - image: riskreturn.png
-        subtitle: Embarking on the Investment Odyssey - Navigating Risk for Reward
-        title: Risk Return
-        url: blogs/risk_return
-      - image: cv.jpg
         subtitle: Illuminating My Professional Journey
         title: Curriculum Vitae
         url: blogs/tempus
+      - image: riskreturn.png
+        subtitle: Embarking on the Investment Odyssey - Navigating Risk for Reward
+        title: Risk Return
+        url: blogs/risk_return
       - image: pic03.jpg
         subtitle: Lorem Etiam Nullam
         title: Magna
