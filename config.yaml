@@ -84,7 +84,7 @@ params:
         title: Risk Return
         url: blogs/risk_return
       - image: data.jpg
-        subtitle: Example 1 - Advanced Techniques
+        subtitle: Advanced Techniques
         title: Unleashing the Power of Data Manipulation
         url: blogs/blo3
       - image: datavis.jpg
