@@ -94,28 +94,9 @@ Generate a bar chart that identifies the number of mass shooters associated with
 # Create a custom color palette
 my_colors <- c("White" = "#FF9999", "Black" = "#666666", "Asian" = "#FFCC99", "Other" = "#3399FF")
 
-# Reorder the data frame by the number of shooters in descending order and eliminate the NA
-mass_shootings %>% 
-  count(race, sort=TRUE) %>% 
-  drop_na(race) %>% 
-  mutate(race = fct_reorder(race, n)) %>% 
-  
-  
-# Create the bar chart with ordered bars and custom colors
-  ggplot( aes(x = race, y = n, fill = race)) +
-  geom_col()+
-  scale_fill_manual(values = my_colors) +
-  labs(x = "Race", y = "Number of Shooters") +
-  ggtitle("Number of Mass Shooters by Race") +
-  theme_minimal()+
-  theme(legend.position = "none")
-```
 
-<img src="/blogs/blo4_files/figure-html/unnamed-chunk-2-1.png" width="648" style="display: block; margin: auto;" />
-
-```r
 # Create the bar chart with ordered bars and custom colors in the other way from max to min
-ggplot(mass_shootings %>% 
+chart5 <- ggplot(mass_shootings %>% 
          count(race, sort = TRUE) %>% 
          drop_na(race) %>% 
          mutate(race = fct_reorder(race, n)),
@@ -126,9 +107,11 @@ ggplot(mass_shootings %>%
   ggtitle("Number of Mass Shooters by Race") +
   theme_minimal() +
   theme(legend.position = "none")
+
+chart5
 ```
 
-<img src="/blogs/blo4_files/figure-html/unnamed-chunk-2-2.png" width="648" style="display: block; margin: auto;" />
+<img src="/blogs/blo4_files/figure-html/unnamed-chunk-2-1.png" width="648" style="display: block; margin: auto;" />
 Generate a boxplot visualizing the number of total victims, by type of location.
 
 
@@ -136,26 +119,30 @@ Generate a boxplot visualizing the number of total victims, by type of location.
 library(ggplot2)
 
 # Create the boxplot
-ggplot(mass_shootings, aes(x = location_type, y = total_victims)) +
+chart2 <- ggplot(mass_shootings, aes(x = location_type, y = total_victims)) +
   geom_boxplot(fill = "steelblue", color = "black") +
   labs(x = "Location", y = "Total Victims") +
   ggtitle("Number of Total Victims by Location Type") +
   theme_minimal()
-```
 
-<img src="/blogs/blo4_files/figure-html/unnamed-chunk-3-1.png" width="648" style="display: block; margin: auto;" />
-
-```r
 # Preprocess the data to remove the outlier in the "Others" location type to make a better chart 
 processed_data <- mass_shootings
 processed_data$total_victims[processed_data$location_type == "Other" & processed_data$total_victims == 604] <- NA
 
 # Create the boxplot with outliers, excluding the outlier in the "Others" location type
-ggplot(processed_data, aes(x = location_type, y = total_victims)) +
+chart3 <- ggplot(processed_data, aes(x = location_type, y = total_victims)) +
   geom_boxplot(fill = "steelblue", color = "black", outlier.colour = "red", outlier.shape = 16) +
   labs(x = "Location", y = "Total Victims") +
   ggtitle("Number of Total Victims by Location Type") +
   theme_minimal()
+
+chart2
+```
+
+<img src="/blogs/blo4_files/figure-html/unnamed-chunk-3-1.png" width="648" style="display: block; margin: auto;" />
+
+```r
+chart3
 ```
 
 <img src="/blogs/blo4_files/figure-html/unnamed-chunk-3-2.png" width="648" style="display: block; margin: auto;" />
@@ -204,12 +191,14 @@ max_month <- shootings_by_month$month[which.max(shootings_by_month$n)]
 max_count <- max(shootings_by_month$n)
 
 # Create the bar chart
-ggplot(shootings_by_month, aes(x = month, y = n)) +
+chart <- ggplot(shootings_by_month, aes(x = month, y = n)) +
   geom_bar(stat = "identity", fill = ifelse(shootings_by_month$month == max_month, "red", "steelblue"), color = "black") +
   labs(x = "Month", y = "Number of Mass Shootings") +
   ggtitle("Number of Mass Shootings by Month") +
   theme_minimal() +
   theme(legend.position = "none")
+
+chart
 ```
 
 <img src="/blogs/blo4_files/figure-html/unnamed-chunk-5-1.png" width="648" style="display: block; margin: auto;" />
