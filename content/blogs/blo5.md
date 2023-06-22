@@ -282,9 +282,6 @@ cat("The party that raised the greatest amount of money had party_id:", party_ma
 ## The party that raised the greatest amount of money had party_id: p4 with a total of: 2.5e+07
 ```
 
-I would like you to write code that generates the following table.
-
-<img src="../../images/total_donations_table.png" width="80%" style="display: block; margin: auto;" />
 
 
 ```r
@@ -364,7 +361,7 @@ ggplot(data = party_year_amounts_1, aes(x = factor(year), y = total_year_donatio
   theme(axis.text.y = element_text(size = 8))
 ```
 
-<img src="/blogs/blo5_files/figure-html/unnamed-chunk-11-1.png" width="648" style="display: block; margin: auto;" />
+<img src="/blogs/blo5_files/figure-html/unnamed-chunk-10-1.png" width="648" style="display: block; margin: auto;" />
 
 
 ```r
@@ -393,14 +390,17 @@ party_year_amounts_2 <- party_year_amounts %>%
 # Create the bar chart
 ggplot(data = party_year_amounts_2, aes(x = factor(year), y = total_year_donations, fill = name)) +
   geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "Conservative - Top Donor but Declining Yearly", subtitle = "Total Donations by Year per Party",, x = "Year", y = "Total Year Donations") +
+  labs(title = "Conservative - Top Donor but Declining Yearly", 
+       subtitle = "Total Donations by Year per Party",
+       x = "Year", 
+       y = "Total Year Donations") +
   scale_fill_manual(values = c(official_colors[top_parties], Others = "#CCCCCC"), name = "Party") +
   theme_minimal() +
   scale_y_continuous(labels = scales::comma_format(scale = 1e-6, accuracy = 0.1, suffix = "M"), expand = c(0, 0)) +
   theme(axis.text.y = element_text(size = 8))
 ```
 
-<img src="/blogs/blo5_files/figure-html/unnamed-chunk-12-1.png" width="648" style="display: block; margin: auto;" />
+<img src="/blogs/blo5_files/figure-html/unnamed-chunk-11-1.png" width="648" style="display: block; margin: auto;" />
 
 
 This uses the default ggplot colour pallete, as I dont want you to worry about using the [official colours for each party](https://en.wikipedia.org/wiki/Wikipedia:Index_of_United_Kingdom_political_parties_meta_attributes). However, I would like you to ensure the parties are sorted according to total donations and not alphabetically. You may even want to remove some of the smaller parties that hardly register on the graph. Would facetting help you?

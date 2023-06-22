@@ -11,7 +11,6 @@ keywords: ""
 slug: risk_return # slug is the shorthand URL address... no spaces plz
 title: Risk-Return of DJIA stocks
 ---
-  
 
 
 

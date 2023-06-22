@@ -65,13 +65,13 @@ params:
         url: '#'
       - name: Blogs
         url: blogs
-      - name: Generic Blog
-        url: blogs/ipsum
-      - name: Elements
-        url: elements.html
+      # - name: Generic Blog
+      #   url: blogs/ipsum
+      # - name: Elements
+      #   url: elements.html
     menu: Menu
-    subtitle: By HTML5 Up
-    title: Forty
+    subtitle: Portfolio Website
+    title: IGNACIO
   tiles:
     enable: yes
     showcase:
@@ -113,7 +113,8 @@ params:
       and I look forward to hearing from you soon."
     title: Thank You
     url: blogs
-  markup: 
-    goldmark: 
-      renderer: 
-        unsafe: true
+    
+markup: 
+  goldmark: 
+    renderer: 
+      unsafe: true

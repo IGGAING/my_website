@@ -292,11 +292,6 @@ party_max_amount <- party_amounts %>%
 cat("The party that raised the greatest amount of money had party_id:", party_max_amount$party_id, "with a total of:", party_max_amount$total_amount, "\n")
 ```
 
-I would like you to write code that generates the following table.
-
-```{r echo=FALSE, out.width="80%"}
-knitr::include_graphics(here::here("images", "total_donations_table.png"), error = FALSE)
-```
 
 ```{r}
 # Join the 'party_donations' and 'parties' tables based on the matching values of the 'party_id' column
@@ -391,7 +386,10 @@ party_year_amounts_2 <- party_year_amounts %>%
 # Create the bar chart
 ggplot(data = party_year_amounts_2, aes(x = factor(year), y = total_year_donations, fill = name)) +
   geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "Conservative - Top Donor but Declining Yearly", subtitle = "Total Donations by Year per Party",, x = "Year", y = "Total Year Donations") +
+  labs(title = "Conservative - Top Donor but Declining Yearly", 
+       subtitle = "Total Donations by Year per Party",
+       x = "Year", 
+       y = "Total Year Donations") +
   scale_fill_manual(values = c(official_colors[top_parties], Others = "#CCCCCC"), name = "Party") +
   theme_minimal() +
   scale_y_continuous(labels = scales::comma_format(scale = 1e-6, accuracy = 0.1, suffix = "M"), expand = c(0, 0)) +
